@@ -182,6 +182,53 @@ namespace MyWardrobe.Controllers
             return View(clothingItem);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddImage(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem, IFormFile ImagePath)
+        {
+            if (id != clothingItem.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var filename = ImagePath!.FileName;
+                    var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
+                    var destinationFilePath = Path.Combine(destinationFolder, filename);
+
+                    if (!Directory.Exists(destinationFolder))
+                    {
+                        Directory.CreateDirectory(destinationFolder);
+                    }
+
+                    // Copy the file to the intended destination folder
+                    using FileStream fs = new FileStream(destinationFilePath, FileMode.Create);
+                    await ImagePath.CopyToAsync(fs);
+
+                    clothingItem.ImagePath = filename;
+
+                    _context.Update(clothingItem);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClothingItemExists(clothingItem.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool ClothingItemExists(int id)
         {
             return _context.ClothingItem.Any(e => e.Id == id);
