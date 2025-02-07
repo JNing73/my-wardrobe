@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyWardrobe.Data;
+using MyWardrobe.Models.Initialisers;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MyWardrobeContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyWardrobeContext") ?? throw new InvalidOperationException("Connection string 'MyWardrobeContext' not found.")));
@@ -9,6 +10,13 @@ builder.Services.AddDbContext<MyWardrobeContext>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    // Add default data when database is empty
+    SeedData.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
