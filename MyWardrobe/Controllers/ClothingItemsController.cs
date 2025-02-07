@@ -162,6 +162,26 @@ namespace MyWardrobe.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: ClothingItems/AddImage/5
+        public async Task<IActionResult> AddImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clothingItem = await _context.ClothingItem
+                .Include(c => c.Brand)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (clothingItem == null)
+            {
+                return NotFound();
+            }
+
+            return View(clothingItem);
+        }
+
         private bool ClothingItemExists(int id)
         {
             return _context.ClothingItem.Any(e => e.Id == id);
