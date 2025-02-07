@@ -24,6 +24,7 @@ namespace MyWardrobe.Models
         [MaxLength(255)]
         public string? Description { get; set; }
 
+        [Display(Name = "Image")]
         public string? ImageFileName { get; set; }
     }
 }
