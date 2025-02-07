@@ -59,7 +59,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description")] ClothingItem clothingItem)
+        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description")] ClothingItem clothingItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
         {
             if (id != clothingItem.Id)
             {
