@@ -48,7 +48,9 @@
             <td>
                 @if (!String.IsNullOrEmpty(item.ImagePath)) {
                     <!-- Images/GetImage?filename={item.ImagePath}-->
-                    <img src="@Url.Action("GetImage", "Images", new { filename= item.ImagePath})" />
+                    <img src="@Url.Action("GetImage", "Images", new { filename= item.ImagePath})" 
+                    class="clothing-image"
+                    />
                 }
             </td>
             <td>
