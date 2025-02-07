@@ -50,6 +50,7 @@
                     <!-- Images/GetImage?filename={item.ImagePath}-->
                     <img src="@Url.Action("GetImage", "Images", new { filename= item.ImagePath})" 
                     class="clothing-image"
+                    alt="@item.Category!.Name @(item.Brand.Name != null ? "made by " + item.Brand.Name : "")"
                     />
                 }
             </td>
