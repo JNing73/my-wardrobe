@@ -46,7 +46,12 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
+                @if (!String.IsNullOrEmpty(item.ImagePath)) {
+                    @item.ImagePath;
+                }
+                else {
+                    <span>no image</span>
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
