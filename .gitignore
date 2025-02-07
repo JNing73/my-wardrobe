@@ -6,6 +6,9 @@
 # EF Migration
 Migrations/
 
+# Application User Uploaded Data
+App_Data/
+
 # dotenv files
 .env
 

@@ -59,7 +59,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description")] ClothingItem clothingItem)
+        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description")] ClothingItem clothingItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
         {
             if (id != clothingItem.Id)
             {
@@ -159,6 +159,73 @@ namespace MyWardrobe.Controllers
             }
 
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: ClothingItems/AddImage/5
+        public async Task<IActionResult> AddImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clothingItem = await _context.ClothingItem
+                .Include(c => c.Brand)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (clothingItem == null)
+            {
+                return NotFound();
+            }
+
+            return View(clothingItem);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddImage(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem, IFormFile ImagePath)
+        {
+            if (id != clothingItem.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var filename = ImagePath!.FileName;
+                    var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
+                    var destinationFilePath = Path.Combine(destinationFolder, filename);
+
+                    if (!Directory.Exists(destinationFolder))
+                    {
+                        Directory.CreateDirectory(destinationFolder);
+                    }
+
+                    // Copy the file to the intended destination folder
+                    using FileStream fs = new FileStream(destinationFilePath, FileMode.Create);
+                    await ImagePath.CopyToAsync(fs);
+
+                    clothingItem.ImageFileName = filename;
+
+                    _context.Update(clothingItem);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClothingItemExists(clothingItem.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return RedirectToAction(nameof(Index));
         }
 
