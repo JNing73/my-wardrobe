@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
+                @Html.DisplayNameFor(model => model.ImageFileName)
             </th>
             <th></th>
         </tr>
@@ -46,9 +46,9 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @if (!String.IsNullOrEmpty(item.ImagePath)) {
+                @if (!String.IsNullOrEmpty(item.ImageFileName)) {
                     <!-- Images/GetImage?filename={item.ImagePath}-->
-                    <img src="@Url.Action("GetImage", "Images", new { filename= item.ImagePath})" 
+                    <img src="@Url.Action("GetImage", "Images", new { filename= item.ImageFileName})" 
                     class="clothing-image"
                     alt="@item.Category!.Name @(item.Brand.Name != null ? "made by " + item.Brand.Name : "")"
                     />

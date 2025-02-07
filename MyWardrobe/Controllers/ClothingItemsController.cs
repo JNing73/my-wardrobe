@@ -208,7 +208,7 @@ namespace MyWardrobe.Controllers
                     using FileStream fs = new FileStream(destinationFilePath, FileMode.Create);
                     await ImagePath.CopyToAsync(fs);
 
-                    clothingItem.ImagePath = filename;
+                    clothingItem.ImageFileName = filename;
 
                     _context.Update(clothingItem);
                     await _context.SaveChangesAsync();

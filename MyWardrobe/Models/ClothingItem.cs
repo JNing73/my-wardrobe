@@ -24,6 +24,6 @@ namespace MyWardrobe.Models
         [MaxLength(255)]
         public string? Description { get; set; }
 
-        public string? ImagePath { get; set; }
+        public string? ImageFileName { get; set; }
     }
 }
