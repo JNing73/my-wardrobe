@@ -59,7 +59,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
+        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description,ImageFileName")] ClothingItem clothingItem)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImageFileName")] ClothingItem clothingItem)
         {
             if (id != clothingItem.Id)
             {
@@ -184,7 +184,7 @@ namespace MyWardrobe.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddImage(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem, IFormFile ImagePath)
+        public async Task<IActionResult> AddImage(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImageFileName")] ClothingItem clothingItem, IFormFile ImageFileName)
         {
             if (id != clothingItem.Id)
             {
@@ -195,7 +195,7 @@ namespace MyWardrobe.Controllers
             {
                 try
                 {
-                    var filename = ImagePath!.FileName;
+                    var filename = ImageFileName!.FileName;
                     var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
                     var destinationFilePath = Path.Combine(destinationFolder, filename);
 
@@ -206,7 +206,7 @@ namespace MyWardrobe.Controllers
 
                     // Copy the file to the intended destination folder
                     using FileStream fs = new FileStream(destinationFilePath, FileMode.Create);
-                    await ImagePath.CopyToAsync(fs);
+                    await ImageFileName.CopyToAsync(fs);
 
                     clothingItem.ImageFileName = filename;
 
