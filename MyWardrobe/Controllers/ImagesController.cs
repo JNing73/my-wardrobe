@@ -6,18 +6,6 @@ namespace MyWardrobe.Controllers
     public class ImagesController : Controller
     {
         private readonly string _folderPathBase = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images"); // As defined in ClothingItems Controller
-        private readonly string? _fileName;
-        private readonly int? _id;
-
-        // Constructor has been setup so that other controllers can correctly call methods from it by passing in a filename
-        // Specifically the DeleteImageAsset method
-        // Ideally would've had two constructors the default constructor with no parameters for routing and the overloaded
-        // constructor for the non-route based methods
-        public ImagesController (int? id = null, string? filename = null)
-        {
-            _id = id;
-            _fileName = filename;
-        }
 
         public async Task<IActionResult> GetImage(int id, string filename)
         {
@@ -50,37 +38,6 @@ namespace MyWardrobe.Controllers
             // Return the image file
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
             return File(fileBytes, contentType);
-        }
-
-        public async Task<IActionResult> DeleteImageAsset()
-        {
-
-            if (_fileName == null) {
-                return BadRequest("This clothing item does not have an imagefile associated with it" +
-                    "\nOr you have have tried to call this method through an invalid route");
-            }
-
-            string idAndfileName = Path.Combine(Convert.ToString(_id)!, _fileName);
-
-            var filePath = Path.Combine(_folderPathBase, idAndfileName);
-
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound();
-            }
-            else
-            {
-                try
-                {
-                    // Asynchronous deletion of the stored file
-                    await Task.Run(() => System.IO.File.Delete(filePath));
-                }
-                catch
-                {
-                    return StatusCode(500, "An unexpected error occurred.");
-                }
-            }
-            return Ok();
         }
     }
 }

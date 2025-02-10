@@ -254,8 +254,7 @@ namespace MyWardrobe.Controllers
                     string? fileName = clothingItem.ImageFileName;
 
                     // Delete the image from the filesystem
-                    var Ic = new ImagesController(clothingItem.Id, fileName);
-                    await Ic.DeleteImageAsset();
+                    await DeleteImageAsset(clothingItem.Id, fileName);
 
                     // Remove the reference to the image file from the clothing item
                     clothingItem.ImageFileName = null;
@@ -277,6 +276,38 @@ namespace MyWardrobe.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<IActionResult> DeleteImageAsset(int id, string? filename)
+        {
+            var folderPathBase = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
+
+            if (filename == null)
+            {
+                return BadRequest("This clothing item does not have an imagefile associated with it");
+            }
+
+            string idAndfileName = Path.Combine(Convert.ToString(id), filename);
+
+            var filePath = Path.Combine(folderPathBase, idAndfileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+            else
+            {
+                try
+                {
+                    // Asynchronous deletion of the stored file
+                    await Task.Run(() => System.IO.File.Delete(filePath));
+                }
+                catch
+                {
+                    return StatusCode(500, "An unexpected error occurred.");
+                }
+            }
+            return Ok();
         }
 
         private bool ClothingItemExists(int id)
