@@ -229,6 +229,47 @@ namespace MyWardrobe.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> RemoveImage(int? id)
+        {
+            // Just a copy and paste of Details() Task thus far
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clothingItem = await _context.ClothingItem
+                .Include(c => c.Brand)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (clothingItem == null)
+            {
+                return NotFound();
+            }
+            // Remove the image attribute from the clothing item
+            else
+            {
+                try
+                {
+                    clothingItem.ImageFileName = null;
+                    _context.Update(clothingItem);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClothingItemExists(clothingItem.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool ClothingItemExists(int id)
         {
             return _context.ClothingItem.Any(e => e.Id == id);
