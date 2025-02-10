@@ -48,7 +48,7 @@
             <td>
                 @if (!String.IsNullOrEmpty(item.ImageFileName)) {
                     <!-- Images/GetImage?filename={item.ImagePath}-->
-                    <img src="@Url.Action("GetImage", "Images", new { filename= item.ImageFileName})" 
+                    <img src="@Url.Action("GetImage", "Images", new { id = item.Id, filename= item.ImageFileName})" 
                     class="clothing-image"
                     alt="@item.Category!.Name @(item.Brand.Name != null ? "made by " + item.Brand.Name : "")"
                     />

@@ -17,10 +17,10 @@ namespace MyWardrobe.Controllers
             _fileName = filename;
         }
 
-        public async Task<IActionResult> GetImage(string filename)
+        public async Task<IActionResult> GetImage(int id, string filename)
         {
             // Build out the filepath
-            var filePath = Path.Combine(_folderPathBase, filename);
+            var filePath = Path.Combine(_folderPathBase, Convert.ToString(id), filename);
 
             if (!System.IO.File.Exists(filePath))
             {

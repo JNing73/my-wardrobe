@@ -196,7 +196,8 @@ namespace MyWardrobe.Controllers
                 try
                 {
                     var filename = ImageFileName!.FileName;
-                    var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
+                    // Images to be partitioned based on the clothing item's id
+                    var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images", Convert.ToString(id));
                     var destinationFilePath = Path.Combine(destinationFolder, filename);
 
                     if (!Directory.Exists(destinationFolder))
