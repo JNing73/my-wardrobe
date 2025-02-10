@@ -7,13 +7,15 @@ namespace MyWardrobe.Controllers
     {
         private readonly string _folderPathBase = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images"); // As defined in ClothingItems Controller
         private readonly string? _fileName;
+        private readonly int? _id;
 
         // Constructor has been setup so that other controllers can correctly call methods from it by passing in a filename
         // Specifically the DeleteImageAsset method
         // Ideally would've had two constructors the default constructor with no parameters for routing and the overloaded
         // constructor for the non-route based methods
-        public ImagesController (string? filename = null)
+        public ImagesController (int? id = null, string? filename = null)
         {
+            _id = id;
             _fileName = filename;
         }
 
@@ -58,7 +60,9 @@ namespace MyWardrobe.Controllers
                     "\nOr you have have tried to call this method through an invalid route");
             }
 
-            var filePath = Path.Combine(_folderPathBase, _fileName);
+            string idAndfileName = Path.Combine(Convert.ToString(_id)!, _fileName);
+
+            var filePath = Path.Combine(_folderPathBase, idAndfileName);
 
             if (!System.IO.File.Exists(filePath))
             {

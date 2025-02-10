@@ -254,7 +254,7 @@ namespace MyWardrobe.Controllers
                     string? fileName = clothingItem.ImageFileName;
 
                     // Delete the image from the filesystem
-                    var Ic = new ImagesController(fileName);
+                    var Ic = new ImagesController(clothingItem.Id, fileName);
                     await Ic.DeleteImageAsset();
 
                     // Remove the reference to the image file from the clothing item
