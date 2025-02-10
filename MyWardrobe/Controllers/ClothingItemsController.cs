@@ -59,7 +59,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
+        public async Task<IActionResult> Create([Bind("Id,CategoryId,BrandId,Size,Description,ImageFileName")] ClothingItem clothingItem)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace MyWardrobe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImageFileName")] ClothingItem clothingItem)
         {
             if (id != clothingItem.Id)
             {
@@ -184,7 +184,7 @@ namespace MyWardrobe.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddImage(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImagePath")] ClothingItem clothingItem, IFormFile ImagePath)
+        public async Task<IActionResult> AddImage(int id, [Bind("Id,CategoryId,BrandId,Size,Description,ImageFileName")] ClothingItem clothingItem, IFormFile ImageFileName)
         {
             if (id != clothingItem.Id)
             {
@@ -195,8 +195,9 @@ namespace MyWardrobe.Controllers
             {
                 try
                 {
-                    var filename = ImagePath!.FileName;
-                    var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
+                    var filename = ImageFileName!.FileName;
+                    // Images to be partitioned based on the clothing item's id
+                    var destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images", Convert.ToString(id));
                     var destinationFilePath = Path.Combine(destinationFolder, filename);
 
                     if (!Directory.Exists(destinationFolder))
@@ -206,7 +207,7 @@ namespace MyWardrobe.Controllers
 
                     // Copy the file to the intended destination folder
                     using FileStream fs = new FileStream(destinationFilePath, FileMode.Create);
-                    await ImagePath.CopyToAsync(fs);
+                    await ImageFileName.CopyToAsync(fs);
 
                     clothingItem.ImageFileName = filename;
 
@@ -227,6 +228,86 @@ namespace MyWardrobe.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RemoveImage(int? id)
+        {
+            // Just a copy and paste of Details() Task thus far
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clothingItem = await _context.ClothingItem
+                .Include(c => c.Brand)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (clothingItem == null)
+            {
+                return NotFound();
+            }
+            // Remove the image attribute from the clothing item
+            else
+            {
+                try
+                {
+                    string? fileName = clothingItem.ImageFileName;
+
+                    // Delete the image from the filesystem
+                    await DeleteImageAsset(clothingItem.Id, fileName);
+
+                    // Remove the reference to the image file from the clothing item
+                    clothingItem.ImageFileName = null;
+                    _context.Update(clothingItem);
+                    await _context.SaveChangesAsync();
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClothingItemExists(clothingItem.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<IActionResult> DeleteImageAsset(int id, string? filename)
+        {
+            var folderPathBase = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images");
+
+            if (filename == null)
+            {
+                return BadRequest("This clothing item does not have an imagefile associated with it");
+            }
+
+            string idAndfileName = Path.Combine(Convert.ToString(id), filename);
+
+            var filePath = Path.Combine(folderPathBase, idAndfileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+            else
+            {
+                try
+                {
+                    // Asynchronous deletion of the stored file
+                    await Task.Run(() => System.IO.File.Delete(filePath));
+                }
+                catch
+                {
+                    return StatusCode(500, "An unexpected error occurred.");
+                }
+            }
+            return Ok();
         }
 
         private bool ClothingItemExists(int id)

@@ -48,7 +48,7 @@
             <td>
                 @if (!String.IsNullOrEmpty(item.ImageFileName)) {
                     <!-- Images/GetImage?filename={item.ImagePath}-->
-                    <img src="@Url.Action("GetImage", "Images", new { filename= item.ImageFileName})" 
+                    <img src="@Url.Action("GetImage", "Images", new { id = item.Id, filename= item.ImageFileName})" 
                     class="clothing-image"
                     alt="@item.Category!.Name @(item.Brand.Name != null ? "made by " + item.Brand.Name : "")"
                     />
@@ -58,7 +58,12 @@
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="AddImage" asp-route-id="@item.Id">Add Image</a>
+                    @if (String.IsNullOrEmpty(item.ImageFileName)) {
+                        <a asp-action="AddImage" asp-route-id="@item.Id">Add Image</a>
+                    }
+                    else {
+                        <a asp-action="RemoveImage" asp-route-id="@item.Id">Remove Image</a>
+                    }
             </td>
         </tr>
 }

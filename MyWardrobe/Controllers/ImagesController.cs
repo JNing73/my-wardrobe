@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MyWardrobe.Controllers
 {
     public class ImagesController : Controller
     {
-        public async Task<IActionResult> GetImage(string filename)
+        private readonly string _folderPathBase = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images"); // As defined in ClothingItems Controller
+
+        public async Task<IActionResult> GetImage(int id, string filename)
         {
             // Build out the filepath
-            var folderPathBase = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "Images"); // As defined in ClothingItems Controller
-            var filePath = Path.Combine(folderPathBase, filename);
+            var filePath = Path.Combine(_folderPathBase, Convert.ToString(id), filename);
 
             if (!System.IO.File.Exists(filePath))
             {
