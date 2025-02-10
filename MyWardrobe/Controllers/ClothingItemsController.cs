@@ -250,9 +250,17 @@ namespace MyWardrobe.Controllers
             {
                 try
                 {
+                    string? fileName = clothingItem.ImageFileName;
+
+                    // Delete the image from the filesystem
+                    var Ic = new ImagesController(fileName);
+                    await Ic.DeleteImageAsset();
+
+                    // Remove the reference to the image file from the clothing item
                     clothingItem.ImageFileName = null;
                     _context.Update(clothingItem);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
