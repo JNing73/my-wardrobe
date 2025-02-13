@@ -12,6 +12,12 @@ public static class SeedData
     private static readonly string _legs = "Legs";
     private static readonly string _feet = "Feet";
 
+    private static readonly string _nike = "Nike";
+    private static readonly string _adidas = "Adidas";
+
+    private static readonly string _tshirt = "T-Shirt";
+    private static readonly string _jeans = "Jeans";
+
     public static void Initialize(IServiceProvider serviceProvider)
     {
         using (var context = new MyWardrobeContext(
@@ -61,7 +67,7 @@ public static class SeedData
         WearLocation torso = seedWearLocations.Where(x => x.Name == _torso).FirstOrDefault()!;
         seedCategories.Add(new Category
         {
-            Name = "T-Shirt",
+            Name = _tshirt,
             WearLocationId = torso.Id,
             WearLocation = torso
         });
@@ -69,7 +75,7 @@ public static class SeedData
         WearLocation legs = seedWearLocations.Where(x => x.Name == _legs).FirstOrDefault()!;
         seedCategories.Add(new Category
         {
-            Name = "Jeans",
+            Name = _jeans,
             WearLocationId = legs.Id,
             WearLocation = legs
         });
@@ -81,8 +87,8 @@ public static class SeedData
     {
         List<Brand> seedBrands = new();
 
-        seedBrands.Add(new Brand { Name = "Nike" });
-        seedBrands.Add(new Brand { Name = "Adidas" });
+        seedBrands.Add(new Brand { Name = _nike });
+        seedBrands.Add(new Brand { Name = _adidas });
 
         return seedBrands;
     }
