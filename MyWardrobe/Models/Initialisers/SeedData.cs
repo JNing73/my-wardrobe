@@ -54,8 +54,29 @@ public static class SeedData
             context.Category.AddRange(seedCategories);
             context.Brand.AddRange(seedBrands);
 
+            // Clothing items relies on both categories and brands having been generated first
+            List<ClothingItem> seedClothingItems = createSeedClothingItems(seedCategories, seedBrands);
+            context.ClothingItem.AddRange(seedClothingItems);
+
             context.SaveChanges();
         }
+    }
+
+    private static List<ClothingItem> createSeedClothingItems(List<Category> seedCategories, List<Brand> seedBrands)
+    {
+        List<ClothingItem> seedClothingItems = new();
+
+        Category wrist = seedCategories.Where(x => x.Name == _watch).FirstOrDefault()!;
+        Brand casio = seedBrands.Where(x => x.Name == _casio).FirstOrDefault()!;
+        seedClothingItems.Add(new ClothingItem
+        {
+            CategoryId = wrist.Id,
+            Category = wrist,
+            BrandId = casio.Id,
+            Brand = casio,
+        });
+
+        return seedClothingItems;
     }
 
     private static List<WearLocation> createSeedWearLocations()
