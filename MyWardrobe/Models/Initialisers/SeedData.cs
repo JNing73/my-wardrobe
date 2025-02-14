@@ -9,14 +9,23 @@ public static class SeedData
 {
     // define constants for body location names
     private static readonly string _torso = "Torso";
+    private static readonly string _wrist = "Wrist";
     private static readonly string _legs = "Legs";
     private static readonly string _feet = "Feet";
 
     private static readonly string _nike = "Nike";
     private static readonly string _adidas = "Adidas";
+    private static readonly string _levis = "Levi's";
+    private static readonly string _hAndM = "H&M";
+    private static readonly string _uniqlo = "Uniqlo";
+    private static readonly string _casio = "Casio";
 
     private static readonly string _tshirt = "T-Shirt";
+    private static readonly string _watch = "Watch";
+    private static readonly string _jacket = "Jacket";
     private static readonly string _jeans = "Jeans";
+    private static readonly string _runningShoes = "Running Shoes";
+    private static readonly string _boots = "Boots";
 
     public static void Initialize(IServiceProvider serviceProvider)
     {
@@ -54,6 +63,7 @@ public static class SeedData
         List<WearLocation> seedWearLocations = new();
 
         seedWearLocations.Add(new WearLocation { Name = _torso });
+        seedWearLocations.Add(new WearLocation { Name = _wrist });
         seedWearLocations.Add(new WearLocation { Name = _legs });
         seedWearLocations.Add(new WearLocation { Name = _feet });
 
@@ -71,6 +81,20 @@ public static class SeedData
             WearLocationId = torso.Id,
             WearLocation = torso
         });
+        seedCategories.Add(new Category
+        {
+            Name = _jacket,
+            WearLocationId = torso.Id,
+            WearLocation = torso
+        });
+
+        WearLocation wrists = seedWearLocations.Where(x => x.Name == _wrist).FirstOrDefault()!;
+        seedCategories.Add(new Category
+        {
+            Name = _watch,
+            WearLocationId = wrists.Id,
+            WearLocation = wrists
+        });
 
         WearLocation legs = seedWearLocations.Where(x => x.Name == _legs).FirstOrDefault()!;
         seedCategories.Add(new Category
@@ -78,6 +102,20 @@ public static class SeedData
             Name = _jeans,
             WearLocationId = legs.Id,
             WearLocation = legs
+        });
+
+        WearLocation feet = seedWearLocations.Where(x => x.Name == _feet).FirstOrDefault()!;
+        seedCategories.Add(new Category
+        {
+            Name = _boots,
+            WearLocationId = feet.Id,
+            WearLocation = feet
+        });
+        seedCategories.Add(new Category
+        {
+            Name = _runningShoes,
+            WearLocationId = feet.Id,
+            WearLocation = feet
         });
 
         return seedCategories;
@@ -89,6 +127,10 @@ public static class SeedData
 
         seedBrands.Add(new Brand { Name = _nike });
         seedBrands.Add(new Brand { Name = _adidas });
+        seedBrands.Add(new Brand { Name = _levis });
+        seedBrands.Add(new Brand { Name = _hAndM });
+        seedBrands.Add(new Brand { Name = _uniqlo });
+        seedBrands.Add(new Brand { Name = _casio });
 
         return seedBrands;
     }
