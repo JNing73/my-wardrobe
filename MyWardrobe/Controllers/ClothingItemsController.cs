@@ -23,7 +23,8 @@ namespace MyWardrobe.Controllers
         public async Task<IActionResult> Index(int? categoryId)
         {
             // Filter Options for Categories
-            ViewData["CategoryId"] = new SelectList(_context.Category.Distinct(), "Id", "Name");
+            var currentClothingCategories = _context.ClothingItem.Select(c => c.Category).Distinct();
+            ViewData["CategoryId"] = new SelectList(currentClothingCategories, "Id", "Name");
 
             var myWardrobeContext = _context.ClothingItem.Include(c => c.Brand).Include(c => c.Category).AsQueryable();
 
