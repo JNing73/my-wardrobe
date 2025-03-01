@@ -7,12 +7,13 @@ namespace MyWardrobe.Models.Initialisers;
 // https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/working-with-sql?view=aspnetcore-9.0&tabs=visual-studio
 public static class SeedData
 {
-    // define constants for body location names
+    // Body Locations Reference Constants
     private static readonly string _torso = "Torso";
     private static readonly string _wrist = "Wrist";
     private static readonly string _legs = "Legs";
     private static readonly string _feet = "Feet";
 
+    // Brand Reference Constants
     private static readonly string _nike = "Nike";
     private static readonly string _adidas = "Adidas";
     private static readonly string _levis = "Levi's";
@@ -20,6 +21,7 @@ public static class SeedData
     private static readonly string _uniqlo = "Uniqlo";
     private static readonly string _casio = "Casio";
 
+    // Clothing Category Reference Constants
     private static readonly string _tshirt = "T-Shirt";
     private static readonly string _watch = "Watch";
     private static readonly string _jacket = "Jacket";
@@ -66,14 +68,43 @@ public static class SeedData
     {
         List<ClothingItem> seedClothingItems = new();
 
-        Category wrist = seedCategories.Where(x => x.Name == _watch).FirstOrDefault()!;
+        Category watch = seedCategories.Where(x => x.Name == _watch).FirstOrDefault()!;
+        Category runningShoe = seedCategories.Where(x => x.Name == _runningShoes).FirstOrDefault()!;
+
+        Brand nike = seedBrands.Where(x => x.Name == _nike).FirstOrDefault()!;
+        Brand adidas = seedBrands.Where(x => x.Name == _adidas).FirstOrDefault()!;
         Brand casio = seedBrands.Where(x => x.Name == _casio).FirstOrDefault()!;
+
+        // Add example watches
         seedClothingItems.Add(new ClothingItem
         {
-            CategoryId = wrist.Id,
-            Category = wrist,
+            CategoryId = watch.Id,
+            Category = watch,
             BrandId = casio.Id,
             Brand = casio,
+        });
+        seedClothingItems.Add(new ClothingItem
+        {
+            CategoryId = watch.Id,
+            Category = watch,
+            BrandId = nike.Id,
+            Brand = nike,
+        });
+
+        // Add example running shoes
+        seedClothingItems.Add(new ClothingItem
+        {
+            CategoryId = runningShoe.Id,
+            Category = runningShoe,
+            BrandId = nike.Id,
+            Brand = nike,
+        });
+        seedClothingItems.Add(new ClothingItem
+        {
+            CategoryId = runningShoe.Id,
+            Category = runningShoe,
+            BrandId = adidas.Id,
+            Brand = adidas,
         });
 
         return seedClothingItems;
