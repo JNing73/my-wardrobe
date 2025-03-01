@@ -20,10 +20,21 @@ namespace MyWardrobe.Controllers
         }
 
         // GET: ClothingItems
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            var myWardrobeContext = _context.ClothingItem.Include(c => c.Brand).Include(c => c.Category);
+            // Filter Options for Categories
+            var currentClothingCategories = _context.ClothingItem.Select(c => c.Category).Distinct();
+            ViewData["CategoryId"] = new SelectList(currentClothingCategories, "Id", "Name");
+
+            var myWardrobeContext = _context.ClothingItem.Include(c => c.Brand).Include(c => c.Category).AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                myWardrobeContext = myWardrobeContext.Where(c => c.CategoryId == categoryId);
+            }
+
             return View(await myWardrobeContext.ToListAsync());
+
         }
 
         // GET: ClothingItems/Details/5

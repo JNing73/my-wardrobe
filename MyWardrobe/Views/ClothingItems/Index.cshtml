@@ -9,6 +9,20 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@* Filter Selection *@
+<form method="get">
+
+    <div class="form-group">
+        <label for="CategoryId">Filter by Category:</label>
+        <select name="categoryId" id="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+            <option>All Categories</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
